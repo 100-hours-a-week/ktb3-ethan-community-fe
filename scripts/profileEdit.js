@@ -1,5 +1,5 @@
 import { isLoggedIn } from "./auth.js";
-import { __patchFetch, __deleteFetch } from "./api.js";
+import { __getFetch, __patchFetch, __deleteFetch } from "./api.js";
 import { __validateInputNickname, msg } from "./validation.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,6 +19,8 @@ function initProfilePage() {
     const toast = document.querySelector(".profile-edit-success-toast-msg");
 
     if (!nicknameInput || !hint || !editBtn || !withdrawBtn || !toast) return;
+
+    loadUserProfile();
 
     nicknameInput.addEventListener("input", () => {
         const result = __validateInputNickname(nicknameInput.value);
@@ -77,4 +79,23 @@ function showToast(toast) {
         toast.classList.add("hide");
         toast.classList.remove("show");
     }, 2000);
+}
+
+async function loadUserProfile() {
+    const userId = localStorage.getItem("user_id");
+    if (!userId) return;
+    const res = await __getFetch(`/users/${userId}`);
+    if (!res.ok) return;
+    const json = await res.json().catch(() => null);
+    if (!json?.data) return;
+
+    const emailView = document.getElementById("email-view");
+    if (emailView) {
+        emailView.textContent = json.data.email ?? "";
+    }
+
+    const nicknameInput = document.getElementById("inputNickname");
+    if (nicknameInput) {
+        nicknameInput.value = json.data.nickname ?? "";
+    }
 }
