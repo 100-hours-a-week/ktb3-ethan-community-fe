@@ -17,3 +17,15 @@ export function formatCountForCard(value) {
     if (num >= 1000) return `${Math.floor(num / 1000)}k`;
     return num;
 }
+
+export function findDom(selector) {
+    const el = document.querySelector(selector);
+    if (!el) throw new Error(`Element not found: ${selector}`);
+    return el;
+}
+
+// export function findDom($parentEl, selector) {
+//     const el = $parentEl.querySelector(selector);
+//     if (!el) throw new Error(`Element not found: ${selector}`);
+//     return el;
+// }

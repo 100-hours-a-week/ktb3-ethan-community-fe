@@ -1,7 +1,7 @@
 
-import { __getFetch, __postFetch, __patchFetch, __deleteFetch } from "./api.js";
-import { isLoggedIn } from "./auth.js";
-import { formatDateForCard, setTextContent, formatCountForCard } from './util.js';
+import { __getFetch, __postFetch, __patchFetch, __deleteFetch } from "../api.js";
+import { isLoggedIn } from "../auth.js";
+import { formatDateForCard, setTextContent, formatCountForCard } from '../util.js';
 
 const SUBMIT_LABEL_DEFAULT = "댓글 입력";
 const SUBMIT_LABEL_EDIT = "댓글 수정";
@@ -27,9 +27,6 @@ const postDeleteModal = {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!isLoggedIn()) {
-        window.location.replace("/page/login.html");
-    }
     state.postId = resolvePostId();
     if (!state.postId) {
         window.location.replace("/index.html");
@@ -221,7 +218,7 @@ function applyPostDetail(post) {
         if (post.author_image_url) {
             $authorImage.src = post.author_image_url;
         } else {
-            $authorImage.src = "../images/default_profile_image.png";
+            $authorImage.src = "../images/profile_placeholder.svg";
         }
     }
 
@@ -378,9 +375,9 @@ function adjustCommentCount(delta) {
 }
 
 function initLikeHandler() {
-    const $likeBox = document.getElementById("post-like-box");
-    if (!$likeBox) return;
-    $likeBox.addEventListener("click", handleLikeToggle);
+    const btn = document.getElementById("post-like-btn");
+    if (!btn) return;
+    btn.addEventListener("click", handleLikeToggle);
 }
 
 function initPostEditButton() {
@@ -408,14 +405,9 @@ async function handleLikeToggle() {
 
 function updateLikeVisual(likeCount, didLike) {
     setTextContent("post-like-count", formatCountForCard(likeCount));
-    const $likeCount = document.getElementById("post-like-count");
-    const $likeBox = document.getElementById("post-like-box");
-    if ($likeCount) {
-        $likeCount.classList.toggle("post-like-active", !!didLike);
-        $likeCount.classList.toggle("post-like-inactive", !didLike);
-    }
-    if ($likeBox) {
-        $likeBox.classList.toggle("post-like-box-active", !!didLike);
+    const btn = document.getElementById("post-like-btn");
+    if (btn) {
+        btn.classList.toggle("like-active", !!didLike);
     }
 }
 

@@ -1,0 +1,52 @@
+.grid {
+  /* Masonry가 position을 absolute로 계산하니 relative 필요 */
+  position: relative;
+}
+
+/* 한 칼럼의 기본 폭(반응형 가능) */
+.grid-sizer {
+  width: 25%; /* 4열 기준, 3열이면 33.333% */
+}
+
+/* 카드 하나 */
+.grid-item {
+  width: 25%;         /* grid-sizer와 동일 비율 */
+  margin-bottom: 16px;
+  /* masonry가 absolute로 배치할 때 transform/top/left를 갱신 */
+}
+
+/* 카드 내부 디자인 */
+.post-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 12px 30px rgba(148, 163, 184, 0.25);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(148, 163, 184, 0.35);
+}
+
+/* 반응형 예시 */
+@media (max-width: 1200px) {
+  .grid-sizer,
+  .grid-item {
+    width: 33.333%; /* 3열 */
+  }
+}
+@media (max-width: 900px) {
+  .grid-sizer,
+  .grid-item {
+    width: 50%; /* 2열 */
+  }
+}
+@media (max-width: 600px) {
+  .grid-sizer,
+  .grid-item {
+    width: 100%; /* 1열 */
+  }
+}

@@ -1,83 +1,94 @@
-document.addEventListener('DOMContentLoaded', () => {
-  initHeader();
+import { findDom } from "./util.js";
+import { logOut, isLoggedIn } from "./auth.js";
 
+document.addEventListener('DOMContentLoaded', () => {
+    initHeader();
 });
 
 function initHeader() {
-  const $backBtn = document.querySelector('.header-action.header-action-left');
-  const $profileWrapper = document.querySelector('.profile-image-wrapper');
-  if ($backBtn) {
-    // 루트가 아니라면 뒤로 가기 버튼은 숨겨야함
-    if (document.referrer && document.referrer !== location.href) {
-      $backBtn.classList.remove("hidden");
+    const $header = findDom('.header-wrapper');
+    const $profileWrapper = findDom('.header-right');
+
+    if ($profileWrapper && isLoggedIn()) {
+        initProfileDropdown($profileWrapper);
     } else {
-      $backBtn.classList.add("hidden");
+        $profileWrapper.classList.add('hide');
     }
-
-    // 뒤로가기 버튼 이벤트 추가
-    $backBtn.addEventListener('click', () => {
-      if (document.referrer && document.referrer !== location.href) {
-        history.back();
-      }
-    });
-  }
-
-  if ($profileWrapper) {
-    initProfileDropdown($profileWrapper);
-  }
+    initSidebarToggle();
+    initHeaderScrollBehavior($header);
 }
 
 function initProfileDropdown($wrapper) {
-  const dropdown = document.createElement("div");
-  dropdown.className = "profile-menu hide";
-  dropdown.innerHTML = `
-    <button type="button" data-action="profile-edit">회원정보수정</button>
-    <button type="button" data-action="password-change">비밀번호수정</button>
-    <button type="button" data-action="logout">로그아웃</button>
-  `;
-  document.body.appendChild(dropdown);
+    $wrapper.classList.remove('hide');
 
-  const positionDropdown = () => {
-    const rect = $wrapper.getBoundingClientRect();
-    dropdown.style.top = `${rect.bottom + 12 + window.scrollY}px`;
-    dropdown.style.left = `${rect.left + window.scrollX - (dropdown.offsetWidth / 2) + rect.width / 2}px`;
-  };
+    const $profileMenu = findDom('.profile-menu');
 
-  const toggleDropdown = () => {
-    dropdown.classList.toggle("hide");
-    dropdown.classList.toggle("show");
-    if (!dropdown.classList.contains("hide")) {
-      positionDropdown();
-    }
-  };
+    $wrapper.addEventListener("click", (event) => {
+        event.stopPropagation();
+        $profileMenu.classList.toggle("hide");
+    });
 
-  $wrapper.addEventListener("click", (event) => {
-    event.stopPropagation();
-    toggleDropdown();
-  });
+    $profileMenu.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const action = e.target.dataset.action;
+        if (!action) return;
 
-  document.addEventListener("click", () => {
-    dropdown.classList.add("hide");
-    dropdown.classList.remove("show");
-  });
+        if (action === "profile-edit") {
+            window.location.href = "/page/profileEdit.html";
+        } else if (action === "password-change") {
+            window.location.href = "/page/passwordChange.html";
+        } else if (action === "logout") {
+            logOut();
+            $profileMenu.classList.toggle("hide");
+            $wrapper.classList.toggle("hide");
+            window.location.replace("/index.html");
+        }
+        $profileMenu.classList.toggle("hide");
+    });
+}
 
-  dropdown.addEventListener("click", (event) => {
-    event.stopPropagation();
-    const action = event.target.dataset.action;
-    if (!action) return;
+function initSidebarToggle() {
+    const $toggle = findDom('#sidebar-toggle');
+    const $toggleIcon = findDom('#sidebar-toggle svg');
+    const $side = findDom(".side");
+    const $page = findDom(".posts-page");
 
-    if (action === "profile-edit") {
-      window.location.href = "/page/profileEdit.html";
-    } else if (action === "password-change") {
-      window.location.href = "/page/passwordChange.html";
-    } else if (action === "logout") {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("user_id");
-      localStorage.removeItem("nickname");
-      localStorage.removeItem("profile_image_url");
-      window.location.replace("/page/login.html");
-    }
-    dropdown.classList.add("hide");
-    dropdown.classList.remove("show");
-  });
+    const setCollapsed = (collapsed) => {
+        $toggleIcon.classList.toggle('icon-select', !collapsed)
+        $side.classList.toggle("collapsed", collapsed);
+        $page.classList.toggle("side-collapsed", collapsed);
+    };
+
+    $toggle.addEventListener("click", () => {
+        const collapsed = !$side.classList.contains("collapsed");
+        setCollapsed(collapsed);
+    });
+}
+
+function initHeaderScrollBehavior($header) {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const update = () => {
+        const currentY = window.scrollY;
+        const diff = currentY - lastScrollY;
+
+        if (currentY <= 20) {
+            $header.classList.remove("header-hidden");
+        } else if (diff > 5) {
+            $header.classList.add("header-hidden");
+        } else if (diff < -5) {
+            $header.classList.remove("header-hidden");
+        }
+
+        lastScrollY = currentY;
+        ticking = false;
+    };
+
+    window.addEventListener("scroll", () => {
+        if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+        }
+    }, { passive: true });
 }

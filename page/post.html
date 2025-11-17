@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>아무 말 대잔치 - 게시글 세부 조회</title>
     <link rel="stylesheet" href="../style/common.css">
+    <link rel="stylesheet" href="../style/posts.css">
     <link rel="stylesheet" href="../style/post.css">
     <script src="../scripts/common.js"></script>
     <script type="module" src="../scripts/post.js"></script>
@@ -18,58 +19,82 @@
                 </svg>
             </div>
             <div class="header-title">아무 말 대잔치</div>
-            <div class="header-action header-action-right profile-image-wrapper">
-                <img id="myProfileImage" class="profileImage"></img>
-            </div>
         </div>
     </div>
-    <main class="page post-page">
-        <div id="post-summary" data-post-id="">
-            <div id="post-title"></div>
-            <div class="author-meta-area">
-                <div class="profile-image-wrapper author-profile-image">
-                    <img id="post-author-image" class="profileImage" src="../images/default_profile_image.png" alt="작성자 프로필">
+    <main class="page posts-page">
+        <aside class="side">
+            <div class="side-card side-profile">
+                <div class="profile-thumb" data-role="side-profile-image"></div>
+                <div class="side-profile__welcome" data-auth-only>
+                    <div class="side-profile__name" data-role="side-nickname">익명</div>
+                    <div class="side-profile__hint">오늘도 새로운 이야기를 들려주세요</div>
+                    <div class="side-profile__actions">
+                        <button type="button" data-action="write">글쓰기</button>
+                        <button type="button" data-action="profile">정보수정</button>
+                    </div>
                 </div>
-                <div class="authorNickname" id="post-author-nickname"></div>
-                <div class="post-card-date-field" id="post-created-at"></div>
+                <div class="side-profile__guest hide" data-guest>
+                    <div class="side-profile__guest-title">로그인하고 다양한 기능을 이용해보세요!</div>
+                    <div class="side-profile__guest-actions">
+                        <button type="button" class="btn-login-guest" data-action="login">로그인</button>
+                        <button type="button" class="btn-join-guest" data-action="join">회원가입</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div class="post-page-wrapper">
+            <div id="post-summary" data-post-id="">
+                <div id="post-title"></div>
+                <div class="post-author-meta">
+                    <div class="author-meta-left">
+                        <div class="profile-image-wrapper author-profile-image">
+                            <img id="post-author-image" class="profileImage" src="../images/profile_placeholder.svg" alt="작성자 프로필">
+                        </div>
+                        <div class="authorNickname" id="post-author-nickname"></div>
+                        <div class="post-card-date-field" id="post-created-at"></div>
+                    </div>
+                    <div class="post-card-count-field post-detail-counts">
+                        <button class="icon-btn" id="post-like-btn" aria-label="좋아요">
+                            <svg viewBox="0 0 24 24"><path d="M12 21s-6.4-4.2-9-9.2C1 8 2.4 4.5 6 4.5c2 0 3.4 1.4 4 2.4.6-1 2-2.4 4-2.4 3.6 0 5 3.5 3 7.3-2.6 5-9 9.2-9 9.2Z"/></svg>
+                            <span id="post-like-count">0</span>
+                        </button>
+                        <div class="icon-meta">
+                            <svg viewBox="0 0 24 24"><path d="M4 5h16v10H7l-3 3V5Z"/></svg>
+                            <span id="post-comment-count">0</span>
+                        </div>
+                        <div class="icon-meta">
+                            <svg viewBox="0 0 24 24"><path d="M12 5c-5 0-9 4.5-10 7 1 2.5 5 7 10 7s9-4.5 10-7c-1-2.5-5-7-10-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/></svg>
+                            <span id="post-view-count">0</span>
+                        </div>
+                        <button class="icon-btn" id="post-share-btn" aria-label="공유">
+                            <svg viewBox="0 0 24 24"><path d="M18 8.5a2.5 2.5 0 1 0-2.38-3.17L9.91 8.3a2.5 2.5 0 0 0 0 3.4l5.71 2.97A2.5 2.5 0 1 0 17 13.5l-5.71-2.97a2.5 2.5 0 0 0 0-3.4L17 4.16A2.5 2.5 0 0 0 18 8.5Z"/></svg>
+                        </button>
+                    </div>
+                </div>
                 <div id="author-area" class="hide">
                     <button id="postEditBtn">수정</button>
                     <button id="postdeleteBtn">삭제</button>
                 </div>
             </div>
-        </div>
-        <div id="post-content-wrapper">
-            <img id="post-content-image" class="post-content-img hide" src="" alt="게시글 이미지"></img>
-            <div class="post-content" id="post-content-text"></div>
-            <div class="post-count-area">
-                <div class="post-count-box post-like-box" id="post-like-box">
-                    <div class="count post-like-count post-like-inactive" id="post-like-count">0</div>
-                    <div class="count-name">좋아요수</div>
-                </div>
-                <div class="post-count-box">
-                    <div class="count" id="post-view-count">0</div>
-                    <div class="count-name">조회수</div>
-                </div>
-                <div class="post-count-box">
-                    <div class="count" id="post-comment-count">0</div>
-                    <div class="count-name">댓글수</div>
-                </div>
+            <div id="post-content-wrapper">
+                <img id="post-content-image" class="post-content-img hide" src="" alt="게시글 이미지"></img>
+                <div class="post-content" id="post-content-text"></div>
             </div>
+            <div id="comment-write">
+                <form id="comment-form">
+                    <div>
+                        <textarea id="inputComment" placeholder="댓글을 남겨주세요!"></textarea>
+                    </div>
+                    <div>
+                        <button id="submitComment" class="comment-submit-btn comment-submit-disabled" disabled>댓글 입력</button>
+                    </div>
+                </form>
+            </div>
+            <div id="comment-view">
+                
+            </div>
+            <div id="sentinel"></div>
         </div>
-        <div id="comment-write">
-            <form id="comment-form">
-                <div>
-                    <textarea id="inputComment" placeholder="댓글을 남겨주세요!"></textarea>
-                </div>
-                <div>
-                    <button id="submitComment" class="comment-submit-btn comment-submit-disabled" disabled>댓글 입력</button>
-                </div>
-            </form>
-        </div>
-        <div id="comment-view">
-            
-        </div>
-        <div id="sentinel"></div>
         <div id="comment-delete-modal" class="modal-overlay hide" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-title">댓글을 삭제하시겠습니까?</div>
