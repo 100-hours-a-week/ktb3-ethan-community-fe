@@ -1,4 +1,4 @@
-
+import { logOut } from './auth.js'
 
 const CSRF_METHOD_LIST = ["POST", "PATCH", "DELETE"];
 const CSRF_PATH_LIST = ["/csrf", "/auth/signup", "/auth/login"];
@@ -81,9 +81,13 @@ export async function __fetch(_path, _method, _body, _contentType = "application
             별도의 상태 코드를 도입해보자.
         */ 
         console.log(json.code);
+        if (json.code === "AUTH004") {
+            window.location.replace("/index.html");
+            logOut();
+        }
         if (json.code !== "AUTH000" && json.code !== "AUTH003") {
             await __reAuth();
-        }
+        } 
     } else {
         if (_path === "/auth/signup" || _path === "/auth/login") {
             const json = await res.json();
