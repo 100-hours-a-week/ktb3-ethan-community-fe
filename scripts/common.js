@@ -150,6 +150,6 @@ function initAuthRequiredHandler() {
         if (isLoggedIn()) return;
         e.preventDefault();
         e.stopPropagation();
-        openGlobalLoginModal();
+        // openGlobalLoginModal();
     });
 }

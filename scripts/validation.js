@@ -22,7 +22,8 @@ export const msg = {
     "duplicate-nickname": "*이미 사용 중인 닉네임입니다.",
 
     // 로그인 검증
-    "wrong-login-info": "*아이디 또는 비밀번호를 확인해주세요.",
+    "wrong-login-info": "*이메일 또는 비밀번호가 올바르지 않습니다.",
+    REQUIRED_INPUT: "*필수 입력값이 누락되었습니다.",
 
     // 회원가입 시 중복 비밀번호 검증 용도
     "password-confirm-mismatch": "*비밀번호가 일치하지 않습니다.",

@@ -92,7 +92,7 @@ export function joinSubmitHandler() {
     $form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const res = await __postFetch("/users", { 
+        const res = await __postFetch("/auth/signup", { 
             email: $form.inputEmail.value, 
             password: $form.inputPassword.value, 
             nickname: $form.inputNickname.value,
@@ -102,10 +102,13 @@ export function joinSubmitHandler() {
 
         if (!res.ok) {
             let message = "회원가입 실패";
+            alert("네트워크 오류!");
             throw new Error(message);
+        } else {
+            alert("회원가입 성공. 로그인 후 이용 바랍니다.");
         }
 
         // 로그인 유도
-        window.location.href = "/page/login.html";
+        window.location.href = "/index.html";
     });
 }

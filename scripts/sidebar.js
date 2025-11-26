@@ -167,20 +167,19 @@ async function handleLoginSubmit(e, syncValidity) {
     }
 
     try {
-        const res = await __postFetch("/users/auth/token", { email, password });
+        const res = await __postFetch("/auth/login", { email, password });
         if (!res.ok) {
+            if (res.status === 400) {
+                if ($error) $error.textContent = msg["REQUIRED_INPUT"]
+            }
             if (res.status === 401 || res.status === 404) {
-                if ($error) $error.textContent = msg["wrong-login-info"] || "이메일 또는 비밀번호가 올바르지 않습니다.";
+                if ($error) $error.textContent = msg["wrong-login-info"];
             } else {
                 if ($error) $error.textContent = "잠시 후 다시 시도해주세요.";
             }
             return;
         }
-        const json = await res.json();
-        localStorage.setItem("user_id", json.data.user_id);
-        localStorage.setItem("nickname", json.data.nickname);
-        localStorage.setItem("access_token", json.data.access_token);
-        localStorage.setItem("profile_image_url", json.data.profile_image_url);
+        
         closeLoginModal();
         location.reload();
     } catch {
