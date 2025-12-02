@@ -31,3 +31,13 @@ export async function updatePost(fetchWithAuth, postId, payload) {
   if (!res.ok) throw new Error(json?.message ?? "게시글 수정에 실패했습니다.");
   return json?.data;
 }
+
+export async function deletePost(fetchWithAuth, postId) {
+  const res = await fetchWithAuth(`/posts/${postId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const json = await res.json().catch(() => null);
+    throw new Error(json?.message ?? "게시글 삭제에 실패했습니다.");
+  }
+}

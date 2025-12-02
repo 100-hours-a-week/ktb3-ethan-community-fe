@@ -7,6 +7,7 @@ import {
   toggleLike,
   updateComment,
 } from "../api/post-detail-api";
+import { deletePost } from "../api/post-editor-api";
 import { useAuth } from "../../../providers/auth-context";
 import { formatDate } from "../../../utils/format";
 import { useInfiniteComments } from "../hooks/useInfiniteComments";
@@ -151,6 +152,18 @@ export function PostDetailPage() {
   const canEditPost =
     post && user?.id && post.user_id != null && Number(post.user_id) === Number(user.id);
 
+  const handleDeletePost = async () => {
+    if (!postId) return;
+    if (!window.confirm("게시글을 삭제하시겠습니까?")) return;
+    try {
+      await deletePost(fetchWithAuth, postId);
+      alert("게시글이 삭제되었습니다.");
+      navigate("/");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "게시글 삭제에 실패했습니다.");
+    }
+  };
+
   if (loadingPost) {
     return <div className="post-page">게시글을 불러오는 중입니다...</div>;
   }
@@ -192,7 +205,20 @@ export function PostDetailPage() {
         <div id="post-summary" data-post-id={post.id}>
           <div className="post-title-row">
             <h1 id="post-title">{post.title}</h1>
-            {canEditPost ? <PostEditorLink postId={post.id} /> : null}
+            {canEditPost ? (
+              <div className="post-action-row">
+                <PostEditorLink postId={post.id} />
+                <button
+                  type="button"
+                  className="icon-button-ghost icon-button-danger"
+                  onClick={handleDeletePost}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 7h12l-1 14H7L6 7Zm3-3h6l1 2H8l1-2Z" />
+                  </svg>
+                </button>
+              </div>
+            ) : null}
           </div>
           <div className="post-author-meta">
               <div className="author-meta-left">

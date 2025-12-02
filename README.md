@@ -29,7 +29,7 @@ app/
   providers/           # 전역 상태 공급자 (AuthProvider)
   routes/              # React Router 파일 기반 라우트
   services/            # fetch wrapper, CSRF util, authStorage
-  styles/       # 바닐라 CSS 재사용 및 확장
+  styles/              # 바닐라 CSS 재사용 및 확장
   utils/               # 포맷/검증 헬퍼
 ```
 
@@ -46,7 +46,7 @@ app/
 
 ## 마이그레이션 체크리스트
 
-- [x] JS 기반 React 프로젝트 구성 + `.gitignore`
+- [x] JS 기반 React 프로젝트 구성
 - [x] AuthProvider / API / CSRF 공통 레이어 구현
 - [x] 게시글/댓글/작성/인증/프로필 화면 React 포팅
 - [x] 추가 기능 개발(최근 본 게시글 기능 추가, 전역 CSRF 설정에서 refresh token 재발급 시에만 최소 적용)

@@ -263,6 +263,16 @@
     box-shadow: 0 8px 15px rgba(107, 91, 226, 0.25);
 }
 
+.icon-button-danger {
+    border-color: #ffb3b3;
+    color: #f04747;
+}
+
+.icon-button-danger:hover {
+    background: #ffe8e8;
+    box-shadow: 0 8px 15px rgba(240, 71, 71, 0.25);
+}
+
 .comment-submit-btn {
     height: 39px;
     width: 138px;
