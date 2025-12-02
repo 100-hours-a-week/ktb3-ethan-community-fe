@@ -23,7 +23,7 @@
 |--|
 |![](/sample/home/무한%20스크롤%20및%20가로%20확장.gif)|
 
-|Masonry 3열|Masonry 3열|
+|Masonry 3열|Masonry 4열|
 |--|--|
 |![](/sample/home/Masonry%20레이아웃%20구현(3줄).png)|![](/sample/home/Masonry%20레이아웃%20구현(4줄).png)|
 
