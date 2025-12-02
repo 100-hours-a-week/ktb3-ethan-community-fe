@@ -7,11 +7,10 @@ function formatCount(value) {
   return num;
 }
 
-function resolvePopularity(viewCount) {
+function resolveViewTier(viewCount) {
   const views = Number(viewCount) || 0;
-  if (views >= 50) return "popularity3";
-  if (views >= 30) return "popularity2";
-  if (views >= 10) return "popularity1";
+  if (views >= 50) return "post-card--tier-max";
+  if (views >= 30) return "post-card--tier-mid";
   return "";
 }
 
@@ -21,11 +20,20 @@ export function PostCard({ post }) {
     typeof post.thumbnail_image_url === "string" &&
     post.thumbnail_image_url.trim().length > 0
       ? post.thumbnail_image_url
-      : null;
-  const classNames = `post-card ${resolvePopularity(post.view_count)}`;
-  const nickname = post.author_nickname || "익명";
-  const content =
-    typeof post.content === "string" ? post.content : post.body || "";
+      : "/images/post_placeholder.svg";
+  const user_profile_image_url =
+    post?.user_profile_image_url ||
+    post?.userProfileImageUrl ||
+    post?.author_profile_image_url ||
+    "/images/profile_placeholder.svg";
+  const classNames = `post-card ${resolveViewTier(post.view_count)}`.trim();
+  const user_nickname =
+    post?.user_nickname ??
+    post?.user_nick_name ??
+    post?.userNickname ??
+    post?.userNickName ??
+    post?.author_nickname ??
+    "익명";
   const title = typeof post.title === "string" ? post.title : "제목 없는 조각";
 
   const handleClick = () => {
@@ -35,18 +43,15 @@ export function PostCard({ post }) {
 
   return (
     <article className={classNames} data-post-id={post.id} onClick={handleClick}>
-      {imageUrl ? (
-        <div
-          className="post-card__image"
-          style={{ backgroundImage: `url('${imageUrl}')` }}
-        />
-      ) : null}
-      <div className="post-card__title">{title}</div>
-      <div className="post-card__content">{content}</div>
-      <div className="post-card-meta-field">
+      <div className="post-card__media">
+        <img src={imageUrl} alt={title} loading="lazy" />
+      </div>
+      <div className="post-card__overlay">
         <div className="post-card__author">
-          <span className="post-card__author-name">{nickname}</span>
+          <img src={user_profile_image_url} alt="" aria-hidden="true" />
+          <span className="post-card__author-name">{user_nickname}</span>
         </div>
+        <div className="post-card__title">{title}</div>
         <div className="post-card-count-field">
           <span className="likeCount">
             <svg aria-hidden="true" viewBox="0 0 24 24">

@@ -35,6 +35,17 @@ export function AuthProvider({ children }) {
   const [status, setStatus] = useState(STATUS.CHECKING);
   const refreshPromise = useRef(null);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storedUser = authStorage.readUser();
+    if (storedUser) {
+      setSession((prev) => ({
+        token: prev.token,
+        user: storedUser,
+      }));
+    }
+  }, []);
+
   const updateSession = useCallback((updater) => {
     setSession((prev) => {
       const nextValue =
@@ -164,6 +175,7 @@ export function AuthProvider({ children }) {
         token,
         user: {
           nickname: json?.data?.nickname ?? "",
+          email: json?.data?.email ?? "",
           profileImageUrl: json?.data?.profile_image_url ?? "/images/profile_placeholder.svg",
           id: json?.data?.user_id ?? null,
         },

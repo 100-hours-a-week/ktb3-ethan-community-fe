@@ -22,5 +22,3 @@
 - `scripts/`: API 헬퍼(`api.js`), 인증(`auth.js`), 검증(`validation.js`), 공통 레이아웃(`common.js`, `sidebar.js`), 페이지 초기화(`scripts/app/*`), 게시글·프로필 등 화면 로직.
 - `page/`: 개별 페이지 HTML(메인, 로그인/회원가입, 게시글 상세·작성·수정, 프로필, 비밀번호 변경).
 - `style/`, `images/`: 스타일과 정적 자산.
-
-## 트러블슈팅

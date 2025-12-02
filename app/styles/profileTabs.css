@@ -1,0 +1,118 @@
+.profile-tabs-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 80px;
+  width: 100%;
+}
+
+.profile-tabs {
+  display: inline-flex;
+  background: #f3f4f6;
+  border-radius: 999px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 32px;
+}
+
+.profile-tabs button {
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.profile-tabs button:hover {
+  color: white;
+  background-color: var(--invalid-btn-bg);
+}
+
+.profile-tabs button.active {
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-tab-content {
+  width: 100%;
+  max-width: 460px;
+}
+
+.profile-edit-form,
+.password-change-form {
+  border-radius: 20px;
+  padding: 36px 40px;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 20px 40px rgba(17, 17, 26, 0.08);
+}
+
+.profile-edit-form h1,
+.password-change-form h1 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 24px;
+}
+
+.profile-edit-form label,
+.password-change-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+.profile-edit-form input,
+.password-change-form input {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 15px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-edit-form input:focus,
+.password-change-form input:focus {
+  border-color: #7f6aee;
+  box-shadow: 0 0 0 3px rgba(127, 106, 238, 0.2);
+  outline: none;
+}
+
+.profile-edit-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.profile-edit-button,
+.password-change-form button[type="submit"] {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--invalid-btn-bg);
+  transition: background 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+  flex: 1;
+}
+
+.profile-edit-button:hover,
+.password-change-form button[type="submit"]:hover {
+  background: #7f6aee;
+  transform: translateY(-1px);
+}
+
+.withdraw-button {
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-size: 14px;
+  cursor: pointer;
+}

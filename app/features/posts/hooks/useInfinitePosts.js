@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "../../../providers/auth-context";
 import { fetchPosts } from "../api/posts-api";
+import { apiClient } from "../../../services/api-client";
 
 const DEFAULT_LIMIT = 10;
 
 export function useInfinitePosts(limit = DEFAULT_LIMIT) {
-  const { fetchWithAuth } = useAuth();
+  const { fetchWithAuth, isAuthenticated } = useAuth();
+  const requestClient = useMemo(
+    () => (isAuthenticated ? fetchWithAuth : apiClient.requestPublic),
+    [fetchWithAuth, isAuthenticated]
+  );
   const [posts, setPosts] = useState([]);
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(true);
@@ -28,7 +33,7 @@ export function useInfinitePosts(limit = DEFAULT_LIMIT) {
     setLoading(true);
     setError(null);
     try {
-      const { posts: newPosts, nextCursor } = await fetchPosts(fetchWithAuth, {
+      const { posts: newPosts, nextCursor } = await fetchPosts(requestClient, {
         cursor,
         limit,
       });
@@ -46,7 +51,7 @@ export function useInfinitePosts(limit = DEFAULT_LIMIT) {
       setLoading(false);
       loadingRef.current = false;
     }
-  }, [cursor, fetchWithAuth, limit]);
+  }, [cursor, limit, requestClient]);
 
   const initialLoadRef = useRef(false);
 

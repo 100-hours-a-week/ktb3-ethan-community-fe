@@ -1,19 +1,16 @@
 const DEFAULT_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
 
-const defaultOptions = {
-  credentials: "include",
-  headers: {
-    Accept: "application/json",
-  },
+const defaultHeaders = {
+  Accept: "application/json",
 };
 
-export const createApiClient = ({ baseUrl = DEFAULT_BASE_URL } = {}) => {
-  const request = async (path, { method = "GET", headers = {}, body, signal } = {}) => {
+const buildRequest = (baseUrl, { credentials }) => {
+  return async (path, { method = "GET", headers = {}, body, signal } = {}) => {
     const response = await fetch(`${baseUrl}${path}`, {
-      ...defaultOptions,
+      credentials,
       method,
       headers: {
-        ...defaultOptions.headers,
+        ...defaultHeaders,
         ...headers,
       },
       body,
@@ -22,8 +19,12 @@ export const createApiClient = ({ baseUrl = DEFAULT_BASE_URL } = {}) => {
 
     return response;
   };
+};
 
-  return { request, baseUrl };
+export const createApiClient = ({ baseUrl = DEFAULT_BASE_URL } = {}) => {
+  const request = buildRequest(baseUrl, { credentials: "include" });
+  const requestPublic = buildRequest(baseUrl, { credentials: "include" });
+  return { request, requestPublic, baseUrl };
 };
 
 export const apiClient = createApiClient();

@@ -43,14 +43,11 @@ export function PostEditorPage({ mode = "create" }) {
     setImageHint("이미지를 업로드 중입니다...");
     try {
       const data = await uploadThumbnail(file);
+      console.log(data);
       setForm((prev) => ({
         ...prev,
         thumbnail_image_url:
-          data?.thumbnailImageUrl ??
-          data?.thumbnail_image_url ??
-          data?.imageUrl ??
-          data?.image ??
-          "",
+          data?.image_url ?? "",
       }));
       setImageHint("이미지가 업로드되었습니다.");
     } catch (err) {
@@ -119,8 +116,10 @@ export function PostEditorPage({ mode = "create" }) {
             </div>
           </div>
           <div className="post-edit-filed">
-            <label htmlFor="inputPostEditImage">대표 이미지</label>
-            <input type="file" id="inputPostEditImage" accept="image/*" onChange={handleImageChange} />
+            <div>
+              <div htmlFor="inputPostEditImage">대표 이미지</div>
+              <input type="file" id="inputPostEditImage" accept="image/*" onChange={handleImageChange} />
+            </div>
             {form.thumbnail_image_url ? (
               <img src={form.thumbnail_image_url} alt="" className="post-content-img" />
             ) : null}

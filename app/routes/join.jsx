@@ -1,4 +1,8 @@
-import { JoinForm } from "../features/auth/components/JoinForm";
+import { AppLayout } from "../components/layout/AppLayout";
+import { Header } from "../components/layout/Header";
+import { CommunityBanner } from "../components/layout/CommunityBanner";
+import { Sidebar } from "../components/layout/Sidebar";
+import { JoinForm } from "../components/auth/JoinForm";
 
 export function meta() {
   return [
@@ -8,5 +12,9 @@ export function meta() {
 }
 
 export default function JoinRoute() {
-  return <JoinForm />;
+  return (
+    <AppLayout Header={Header} Banner={CommunityBanner} Sidebar={Sidebar}>
+      <JoinForm />
+    </AppLayout>
+  );
 }

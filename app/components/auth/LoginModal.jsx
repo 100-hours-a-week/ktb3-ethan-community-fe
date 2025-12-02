@@ -32,8 +32,8 @@ export function LoginModal({ open, onClose }) {
     setError("");
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const passwordCheck = validatePassword(form.password);
     if (!emailCheck.ok) {
       setError(emailCheck.msg);
@@ -77,9 +77,6 @@ export function LoginModal({ open, onClose }) {
                   placeholder="이메일을 입력하세요"
                   value={form.email}
                   onChange={handleChange}
-                  onInvalid={(event) =>
-                    event.target.setCustomValidity("올바른 이메일 주소 형식을 입력해주세요.")
-                  }
                   onInput={(event) => event.target.setCustomValidity("")}
                   required
                 />
@@ -114,8 +111,8 @@ export function LoginModal({ open, onClose }) {
                 <button type="submit" className={canSubmit ? "login-valid" : ""} disabled={!canSubmit}>
                   {status === "loading" ? "로그인 중..." : "로그인"}
                 </button>
+                {error ? <div className="login-modal__error">{error}</div> : <div className="login-modal__error" />}
               </div>
-              {error ? <div className="login-modal__error">{error}</div> : <div className="login-modal__error" />}
             </form>
           </div>
         </div>

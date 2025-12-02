@@ -1,86 +1,70 @@
-.join-wrapper {
-    width: 390px;
-}
-
-#join-title {
-    height: 38px;
-    font-weight: bold;
-    font-size: 32px;
-    line-height: 100%;
-    text-align: center;
-    margin-bottom: 20px;
-}
 #join-form {
+    margin-top: 20px;
+    height: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
-.join-page .field__label {
-    display: block;
-    height: 18px;
-    font-size: 16px;
-    line-height: 100%;
-    font-weight: bold;
 
-    margin-top: 7px;   /* 142 - 93 = 49px = 33 + 16*/
-    margin-bottom: 3px; /* 93 - 67 = 25px = 18 + 7*/
-}
-.join-page .field {
-    width: 355px;
-}
 
 .field__file__input {
     display: none;
     
 }
 
-.upload-circle {
-    width: 149px;
-    height: 149px;
-    border-radius: 50%;
-    background: #C4C4C4;
+.join-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.join-profile-panel {
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    overflow: hidden;
-    cursor: pointer;
 }
 
-.upload-circle .plus-icon {
-    height: 24px;
-    width: 24px;
+.join-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.upload-circle:hover {
-    background: #c8c8c8;
+.join-fields-panel {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    gap: 18px;
 }
 
-.upload-circle img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.join-fields-panel .field__label {
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    line-height: 100%;
+    font-weight: bold;
 }
 
-.join-page .field__input {
-    width: 355px;
+.join-fields-panel .field__input {
     height: 33px;
     font-size: 15px;
-
     padding-left: 10px;
-
     border-radius: var(--radius);
-    border: 1px solid black;
+    border: 1px solid #bbb;
 }
 
-.field__hint {
-    margin-top: 5px;
-    margin-bottom: 15px;
+.join-field .field-hint {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #f15c5c;
 }
+
 
 .join-button {
-    width: 360px;
+    width: 300px;
     height: 35px;
     margin-top: 10px;
     border-radius: var(--radius);
@@ -97,4 +81,3 @@
     font-size: 14px;
     height: 17px;
 }
-

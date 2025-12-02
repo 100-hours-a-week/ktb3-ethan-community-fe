@@ -1,28 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../providers/auth-context";
 import { LoginModal } from "../auth/LoginModal";
+import {
+  readRecentPosts,
+  subscribeRecentPosts,
+  removeRecentPost,
+} from "../../features/posts/utils/recent-posts";
 
 export function Sidebar({ collapsed = false }) {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [recentPosts, setRecentPosts] = useState([]);
+
+  useEffect(() => {
+    setRecentPosts(readRecentPosts());
+    const unsubscribe = subscribeRecentPosts(setRecentPosts);
+    return unsubscribe;
+  }, []);
+
+  const handleRemoveRecent = (postId) => {
+    removeRecentPost(postId);
+    setRecentPosts((prev) => prev.filter((item) => item.id !== postId));
+  };
 
   const openLoginModal = () => setLoginModalOpen(true);
   const closeLoginModal = () => setLoginModalOpen(false);
 
-  const goToJoin = () => navigate("/join");
+  const goToJoin = () => {
+    if (!isAuthenticated) {
+      navigate("/join");
+      return;
+    }
+  };
+
   const goToWrite = () => {
     if (!isAuthenticated) {
       openLoginModal();
       return;
     }
     navigate("/posts/new");
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
   };
 
   const nickname = user?.nickname ?? "사용자";
@@ -47,9 +65,6 @@ export function Sidebar({ collapsed = false }) {
               <button type="button" data-action="write" onClick={goToWrite}>
                 조각 쓰기
               </button>
-              <button type="button" data-action="logout" onClick={handleLogout}>
-                로그아웃
-              </button>
             </div>
           </div>
         ) : (
@@ -66,18 +81,51 @@ export function Sidebar({ collapsed = false }) {
               >
                 로그인
               </button>
-              <button
-                type="button"
-                className="btn-join-guest"
-                data-action="join"
-                onClick={goToJoin}
-              >
+              <button type="button" className="btn-join-guest" onClick={goToJoin}>
                 회원가입
               </button>
             </div>
           </div>
         )}
       </div>
+      <div className="recent-posts-card__header">최근 본 조각</div>
+      {recentPosts.length ? (
+        <>
+          <div className="side-card recent-posts-card">
+            <ul>
+              {recentPosts.map((item) => (
+                <li key={item.id}>
+                  <div className="recent-posts-card__row">
+                    <button type="button" onClick={() => navigate(`/posts/${item.id}`)}>
+                      <div className="recent-posts-card__thumb">
+                        <img
+                          src={item.thumbnail_image_url || "/images/post_placeholder.svg"}
+                          alt=""
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="recent-posts-card__body">
+                        <div className="recent-posts-card__title">{item.title}</div>
+                        <div className="recent-posts-card__meta">
+                          {item.user_nickname ?? item.userNickname ?? item.author_nickname ?? "익명"}
+                        </div>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className="recent-posts-card__remove"
+                      aria-label="최근 목록에서 제거"
+                      onClick={() => handleRemoveRecent(item.id)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      ) : null}
       <LoginModal open={loginModalOpen} onClose={closeLoginModal} />
     </aside>
   );

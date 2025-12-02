@@ -3,9 +3,8 @@
 @import "./post.css";
 @import "./postEdit.css";
 @import "./join.css";
-@import "./login.css";
-@import "./new.css";
 @import "./passwordChange.css";
 @import "./profileEdit.css";
 @import "./modal-login.css";
-@import "./header.css"
+@import "./header.css";
+@import "./profileTabs.css"

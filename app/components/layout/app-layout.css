@@ -1,11 +1,21 @@
 .app-shell {
-  min-height: 100vh;
+  --sidebar-width: 260px;
+  --shell-gap: 24px;
+  /* min-height: 100vh; */
   display: flex;
   flex-direction: column;
 }
 
-.app-shell > .flex {
+.app-shell__body {
   display: flex;
-  margin-top: 60px;
   width: 100%;
+  padding: 0 var(--shell-gap);
+  gap: var(--shell-gap);
+  transition: padding 0.4s ease;
+}
+
+.app-shell__content {
+  flex: 1;
+  min-width: 730px;
+  transition: transform 0.4s ease;
 }

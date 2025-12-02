@@ -1,11 +1,6 @@
 const CSRF_TOKEN_KEY = "XSRF-TOKEN";
 
-const needsCsrf = ({ method, path }) => {
-  if (!method) return false;
-  const csrfMethods = ["POST", "PATCH", "PUT", "DELETE"];
-  const safePaths = ["/csrf", "/auth/signup", "/auth/login"];
-  return csrfMethods.includes(method.toUpperCase()) && !safePaths.includes(path);
-};
+const needsCsrf = ({ path }) => path === "/auth/refresh";
 
 const readCookie = (name) => {
   const entries = document.cookie.split("; ").filter(Boolean);
@@ -18,14 +13,12 @@ export async function ensureCsrfToken(api) {
   const existing = readCookie(CSRF_TOKEN_KEY);
   if (existing) return existing;
 
-  await api.request("/csrf", { method: "POST" });
+  await api.request("/csrf", { method: "GET", credentials: "include"});
   return readCookie(CSRF_TOKEN_KEY);
 }
 
 export const withCsrf = async (api, path, options = {}) => {
-  const method = options.method ?? "GET";
-  const shouldAttach = needsCsrf({ method, path });
-  if (!shouldAttach) return options;
+  if (!needsCsrf({ path })) return options;
 
   const csrfToken = await ensureCsrfToken(api);
   if (!csrfToken) return options;

@@ -14,20 +14,25 @@ export function AppLayout({ Header, Banner, Sidebar, children }) {
       <Header
         onToggleSidebar={handleSidebarToggle}
         sidebarCollapsed={sidebarCollapsed}
+        hasSidebar={Boolean(Sidebar)}
       />
     );
-  }, [Header, handleSidebarToggle, sidebarCollapsed]);
+  }, [Header, Sidebar, handleSidebarToggle, sidebarCollapsed]);
 
   const bannerNode = Banner ? <Banner /> : null;
   const sidebarNode = Sidebar ? <Sidebar collapsed={sidebarCollapsed} /> : null;
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
       {headerNode}
       {bannerNode}
-      <div className="flex">
+      <div
+        className={`app-shell__body ${
+          sidebarCollapsed ? "app-shell__body--collapsed" : ""
+        }`}
+      >
         {sidebarNode}
-        {children}
+        <div className="app-shell__content">{children}</div>
       </div>
     </div>
   );

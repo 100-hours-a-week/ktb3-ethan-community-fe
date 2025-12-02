@@ -1,13 +1,11 @@
 import { apiClient } from "../../../services/api-client";
-import { withCsrf } from "../../../services/csrf";
-
 export async function uploadThumbnail(file) {
   const formData = new FormData();
   formData.append("image", file);
-  const options = await withCsrf(apiClient, "/upload/post", {
+  const options = {
     method: "POST",
     body: formData,
-  });
+  };
   const res = await apiClient.request("/upload/post", options);
   const json = await res.json().catch(() => null);
   if (!res.ok) throw new Error(json?.message ?? "이미지 업로드에 실패했습니다.");

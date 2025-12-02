@@ -1,3 +1,5 @@
+import { apiClient } from "../../../services/api-client";
+
 export async function fetchUserDetail(fetchWithAuth, userId) {
   const res = await fetchWithAuth(`/users/${userId}`, { method: "GET" });
   const json = await res.json().catch(() => null);
@@ -32,5 +34,17 @@ export async function changePassword(fetchWithAuth, payload) {
   });
   const json = await res.json().catch(() => null);
   if (!res.ok) throw new Error(json?.message ?? "비밀번호 변경에 실패했습니다.");
+  return json?.data;
+}
+
+export async function uploadProfileImage(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+  const res = await apiClient.request("/upload/profile", {
+    method: "POST",
+    body: formData,
+  });
+  const json = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(json?.message ?? "프로필 이미지를 업로드하지 못했습니다.");
   return json?.data;
 }

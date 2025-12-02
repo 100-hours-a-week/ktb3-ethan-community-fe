@@ -1,13 +1,17 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../providers/auth-context";
-import { LoginModal } from "../../components/auth/LoginModal"
+import { getProfileImageOrDefault, getInfoOrDefault } from "../../utils/format.js" 
 
-export function Header({ onToggleSidebar, sidebarCollapsed }) {
-  const { isAuthenticated, user, logout, status } = useAuth();
+
+export function Header({ onToggleSidebar, sidebarCollapsed, hasSidebar = true }) {
+  const { isAuthenticated, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
+  const [hidden, setHidden] = useState(false);
+  const lastScroll = useRef(0);
+  const scrollTicking = useRef(false);
 
   useEffect(() => {
     if (!menuOpen) return undefined;
@@ -22,10 +26,28 @@ export function Header({ onToggleSidebar, sidebarCollapsed }) {
     return () => document.removeEventListener("click", handleClick);
   }, [menuOpen]);
 
-  const profileImage = useMemo(
-    () => user?.profileImageUrl ?? "/images/profile_placeholder.svg",
-    [user?.profileImageUrl]
-  );
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY || 0;
+      if (scrollTicking.current) return;
+      scrollTicking.current = true;
+      window.requestAnimationFrame(() => {
+        const delta = currentY - lastScroll.current;
+        if (currentY < 40) {
+          setHidden(false);
+        } else if (delta > 4) {
+          setHidden(true);
+        } else if (delta < -4) {
+          setHidden(false);
+        }
+        lastScroll.current = currentY;
+        scrollTicking.current = false;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSidebarToggle = useCallback(() => {
     onToggleSidebar?.();
@@ -40,17 +62,16 @@ export function Header({ onToggleSidebar, sidebarCollapsed }) {
     navigate("/profile");
     setMenuOpen(false);
   };
-  const goToPasswordChange = () => {
-    navigate("/password");
-    setMenuOpen(false);
-  };
+  
   return (
-    <div className="header-wrapper">
+    <div className={`header-wrapper ${hidden ? "header-hidden" : ""}`}>
       <div className="header-left">
-        <HeaderLeftMemo
-          onToggleSidebar={handleSidebarToggle}
-          sidebarCollapsed={sidebarCollapsed}
-        />
+        {hasSidebar ? (
+          <HeaderLeftMemo
+            onToggleSidebar={handleSidebarToggle}
+            sidebarCollapsed={sidebarCollapsed}
+          />
+        ) : null}
 
         <div className="header-title">
           <a href="/">하루 조각</a>
@@ -58,14 +79,10 @@ export function Header({ onToggleSidebar, sidebarCollapsed }) {
       </div>
       <HeaderRightMemo
         isAuthenticated={isAuthenticated}
-        status={status}
-        nickname={user ? user.nickname : "불러오는 중..."}
-        profileImage={profileImage}
         menuOpen={menuOpen}
         onToggleMenu={() => setMenuOpen((prev) => !prev)}
         menuRef={menuRef}
         goToProfileEdit={goToProfileEdit}
-        goToPasswordChange={goToPasswordChange}
         onLogout={handleLogout}
       />
     </div>
@@ -102,19 +119,17 @@ const HeaderLeftMemo = memo(function HeaderLeft({ onToggleSidebar, sidebarCollap
 
 const HeaderRightMemo = memo(function HeaderRight({
   isAuthenticated,
-  status,
-  nickname,
-  profileImage,
   menuOpen,
   onToggleMenu,
   menuRef,
   goToProfileEdit,
-  goToPasswordChange,
   onLogout,
 }) {
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const openLoginModal = () => setLoginModalOpen(true);
-  const closeLoginModal = () => setLoginModalOpen(false);
+
+  const {user} = useAuth();
+
+
+  const profileImage = getProfileImageOrDefault(user);
 
   return (
     <div className="header-right">
@@ -129,24 +144,11 @@ const HeaderRightMemo = memo(function HeaderRight({
           <ProfileDropdown
             menuOpen={menuOpen}
             menuRef={menuRef}
-            goToProfileEdit={goToProfileEdit}
+            user={user}
             profileImage={profileImage}
-            nickname={nickname}
-            goToPasswordChange={goToPasswordChange}
+            goToProfileEdit={goToProfileEdit}
             onLogout={onLogout}
           />
-        </>
-      }
-      {!isAuthenticated && 
-        <>
-          <button
-            type="button"
-            className="btn-login-guest"
-            onClick={openLoginModal}
-            disabled={status === "checking"}>
-          로그인
-          </button>
-          <LoginModal open={loginModalOpen} onClose={closeLoginModal} />
         </>
       }
     </div>
@@ -157,10 +159,9 @@ const HeaderRightMemo = memo(function HeaderRight({
 function ProfileDropdown({
   menuOpen,
   menuRef,
-  goToProfileEdit,
+  user,
   profileImage,
-  nickname,
-  goToPasswordChange,
+  goToProfileEdit,
   onLogout,
 }) {
   return (
@@ -174,17 +175,38 @@ function ProfileDropdown({
           className="profile-image"
           src={profileImage}
         />
-        <div>{nickname}</div>
+        <div>
+          <div className="nickname">{getInfoOrDefault(user?.nickname)}</div>
+          <div className="email">{getInfoOrDefault(user?.email)}</div>
+        </div>
       </div>
-      <button type="button" data-action="profile-edit" onClick={goToProfileEdit}>
-        회원정보수정
-      </button>
-      <button type="button" data-action="password-change" onClick={goToPasswordChange}>
-        비밀번호수정
-      </button>
-      <button type="button" data-action="logout" onClick={onLogout}>
-        로그아웃
-      </button>
+      <ProfileAction 
+        action={"profile-edit"}
+        name={"개인정보 설정"}
+        logoUrl={"/public/icon/edit.svg"}
+        handleClick={goToProfileEdit}
+      />
+      <ProfileAction 
+        action={"logout"}
+        name={"로그아웃"}
+        logoUrl={"/public/icon/logout.svg"}
+        handleClick={onLogout}
+      />
     </div>
+  );
+}
+
+
+function ProfileAction({action, name, logoUrl, handleClick}) {
+  const onActionClick = (event) => {
+    event.stopPropagation();
+    handleClick?.();
+  };
+
+  return (
+    <button type="button" className="action-wrapper" data-action={action} onClick={onActionClick}>
+      <img src={logoUrl} className="icon" alt="" />
+      <span>{name}</span>
+    </button>
   );
 }

@@ -7,5 +7,4 @@ export default [
   route("posts/:postId", "routes/posts.$postId.jsx"),
   route("posts/:postId/edit", "routes/posts.$postId.edit.jsx"),
   route("profile", "routes/profile.jsx"),
-  route("password", "routes/password.jsx"),
 ];
